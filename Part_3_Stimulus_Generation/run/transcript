@@ -572,3 +572,107 @@
 #    Time: 35 ns  Iteration: 161  Instance: /wb_env_top_mod/test
 # End time: 14:49:25 on Aug 21,2026, Elapsed time: 0:00:03
 # Errors: 0, Warnings: 5
+# vsim -c -suppress 7030 -L mtiUvm -sv_seed 1 "+UVM_TESTNAME=wb_env_test_priority" work.wb_env_top_mod -do "run -all; quit -f" 
+# Start time: 15:00:42 on Aug 21,2026
+# ** Note: (vsim-8009) Loading existing optimized design _opt
+# //  Questa Sim-64
+# //  Version 2021.2_1 linux_x86_64 May 15 2021
+# //
+# //  Copyright 1991-2021 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  QuestaSim and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# Loading sv_std.std
+# Loading work.wb_master_if(fast)
+# Loading work.wb_slave_if(fast)
+# Loading mtiUvm.uvm_pkg(fast)
+# Loading work.wb_tests(fast)
+# Loading mtiUvm.questa_uvm_pkg(fast)
+# Loading work.wb_env_top_mod(fast)
+# ** Warning: (vsim-3764) Stand-alone call to function 'get' treated as implicit void cast.
+#    Time: 0 ns  Iteration: 0  Region: /wb_tests File: ../src/wb_master_mon.sv Line: 86
+# ** Warning: (vsim-3764) Stand-alone call to function 'get' treated as implicit void cast.
+#    Time: 0 ns  Iteration: 0  Region: /wb_tests File: ../src/wb_slave_mon.sv Line: 84
+# ** Warning: (vsim-3764) Stand-alone call to function 'get' treated as implicit void cast.
+#    Time: 0 ns  Iteration: 0  Region: /wb_tests File: ../env/wb_master_agent.sv Line: 35
+# ** Warning: (vsim-3764) Stand-alone call to function 'get' treated as implicit void cast.
+#    Time: 0 ns  Iteration: 0  Region: /wb_tests File: ../env/wb_slave_agent.sv Line: 28
+# ** Warning: (vsim-3764) Stand-alone call to function 'get' treated as implicit void cast.
+#    Time: 0 ns  Iteration: 0  Region: /wb_tests::wb_master File: ../src/wb_master.sv Line: 77
+# Loading /home/ajay/Questasim/questasim/uvm-1.1d/linux_x86_64/uvm_dpi.so
+# run -all
+# ----------------------------------------------------------------
+# UVM-1.1d
+# (C) 2007-2013 Mentor Graphics Corporation
+# (C) 2007-2013 Cadence Design Systems, Inc.
+# (C) 2006-2013 Synopsys, Inc.
+# (C) 2011-2013 Cypress Semiconductor Corp.
+# ----------------------------------------------------------------
+# 
+#   ***********       IMPORTANT RELEASE NOTES         ************
+# 
+#   You are using a version of the UVM library that has been compiled
+#   with `UVM_NO_DEPRECATED undefined.
+#   See http://www.eda.org/svdb/view.php?id=3313 for more details.
+# 
+#   You are using a version of the UVM library that has been compiled
+#   with `UVM_OBJECT_MUST_HAVE_CONSTRUCTOR undefined.
+#   See http://www.eda.org/svdb/view.php?id=3770 for more details.
+# 
+#       (Specify +UVM_NO_RELNOTES to turn off this notice)
+# 
+# UVM_INFO verilog_src/questa_uvm_pkg-1.2/src/questa_uvm_pkg.sv(277) @ 0: reporter [Questa UVM] QUESTA_UVM-1.2.3
+# UVM_INFO verilog_src/questa_uvm_pkg-1.2/src/questa_uvm_pkg.sv(278) @ 0: reporter [Questa UVM]  questa_uvm::init(+struct)
+# UVM_INFO @ 0: reporter [RNTST] Running test wb_env_test_priority...
+# UVM_INFO ../src/wb_slave_seqr.sv(42) @ 0: uvm_test_top.env.slave_agent.slv_seqr [WB_SLAVE_SEQR] Initializing memory
+# ----------------------------------------------
+# Name             Type           Size  Value   
+# ----------------------------------------------
+# wb_slave_config  wb_config      -     @579    
+#   port_size      sizes_e        32    BYTE    
+#   granularity    sizes_e        32    BYTE    
+#   cycles         cycle_types_e  32    CLASSIC 
+#   max_n_wss      integral       32    'ha     
+#   min_addr       integral       64    'h0     
+#   max_addr       integral       64    'h989680
+# ----------------------------------------------
+# UVM_INFO verilog_src/uvm-1.1d/src/base/uvm_objection.svh(1267) @ 0: reporter [TEST_DONE] 'run' phase is ready to proceed to the 'extract' phase
+# UVM_INFO ../src/priority.sv(20) @ 0: uvm_test_top.env.master_agent.mast_sqr@@sequence_3 [uvm_test_top.env.master_agent.mast_sqr.sequence_3] Running UVM SEQUENCE_3
+# UVM_INFO ../src/wb_master.sv(145) @ 0: uvm_test_top.env.master_agent.mast_drv [wb_env_DRIVER] Starting transaction...
+# UVM_INFO ../src/wb_master.sv(222) @ 5: uvm_test_top.env.master_agent.mast_drv [Wb master] Got a write transaction
+# UVM_INFO ../src/wb_master_mon.sv(157) @ 5: uvm_test_top.env.master_agent.mast_mon [WB master Monitor] got a write transaction  from Master 
+# UVM_INFO ../src/wb_slave.sv(162) @ 5: uvm_test_top.env.slave_agent.slv_drv [Wb_slave] got a write transaction  from Master 
+# UVM_INFO ../src/wb_slave_mon.sv(146) @ 5: uvm_test_top.env.slave_agent.slv_mon [WB slave Monitor] got a write transaction  from Master 
+# UVM_INFO ../src/wb_slave_agent_sequence_library.sv(50) @ 5: uvm_test_top.env.slave_agent.slv_seqr@@ram_sequence [uvm_test_top.env.slave_agent.slv_seqr.ram_sequence] In SLAVE SEQUENCER, Transaction address = 0000000000000016   kind = WRITE
+# UVM_INFO ../src/wb_slave_agent_sequence_library.sv(56) @ 5: uvm_test_top.env.slave_agent.slv_seqr@@ram_sequence [uvm_test_top.env.slave_agent.slv_seqr.ram_sequence] SLAVE SEQUENCER OUTPUT, Transaction address = 0000000000000016   kind = WRITE data = c2e1477988e75ee0
+# 
+# --- UVM Report Summary ---
+# 
+# ** Report counts by severity
+# UVM_INFO :   13
+# UVM_WARNING :    0
+# UVM_ERROR :    0
+# UVM_FATAL :    0
+# ** Report counts by id
+# [Questa UVM]     2
+# [RNTST]     1
+# [TEST_DONE]     1
+# [WB master Monitor]     1
+# [WB slave Monitor]     1
+# [WB_SLAVE_SEQR]     1
+# [Wb master]     1
+# [Wb_slave]     1
+# [uvm_test_top.env.master_agent.mast_sqr.sequence_3]     1
+# [uvm_test_top.env.slave_agent.slv_seqr.ram_sequence]     2
+# [wb_env_DRIVER]     1
+# ** Note: $finish    : /home/ajay/Questasim/questasim/linux_x86_64/../verilog_src/uvm-1.1d/src/base/uvm_root.svh(430)
+#    Time: 35 ns  Iteration: 161  Instance: /wb_env_top_mod/test
+# End time: 15:00:45 on Aug 21,2026, Elapsed time: 0:00:03
+# Errors: 0, Warnings: 5
