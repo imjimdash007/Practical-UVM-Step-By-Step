@@ -1,3 +1,5 @@
+`include "uvm_macros.svh"
+import uvm_pkg::*;
 // Class definition
 class class_A extends uvm_object;
 

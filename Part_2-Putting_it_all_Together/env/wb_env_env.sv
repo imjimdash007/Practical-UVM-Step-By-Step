@@ -1,6 +1,6 @@
 `ifndef WB_ENV_ENV__SV
 `define WB_ENV_ENV__SV
-`include "wb_env.sv"
+//`include "wb_env.sv"
 class wb_env_env extends uvm_env;
    wb_master_agent master_agent;
    wb_slave_agent slave_agent;
@@ -36,7 +36,8 @@ endfunction: build_phase
 
 function void wb_env_env::connect_phase(uvm_phase phase);
    super.connect_phase(phase);
-   master_agent.mast_mon.mon_analysis_port.connect(cov.cov_export);
+   //master_agent.mast_mon.mon_analysis_port.connect(cov.cov_export);
+   master_agent.mast_mon.mon_analysis_port.connect(cov.analysis_export);
   master_agent.mast_mon.mon_analysis_port.connect(sb.expected_wb_transaction_fifo.analysis_export);
    slave_agent.slv_mon.mon_analysis_port.connect(sb.actual_wb_transaction_fifo.analysis_export);
 

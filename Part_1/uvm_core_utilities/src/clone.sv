@@ -1,3 +1,6 @@
+`include "uvm_macros.svh"
+import uvm_pkg::*;
+
 module top;
 import uvm_pkg::*;
 typedef class class_A;

@@ -1,7 +1,7 @@
 `ifndef BASE_TEST__SV
  `define BASE_TEST__SV
 
-typedef class wb_env;
+typedef class wb_env_env;
 
 class wb_env_base_test extends uvm_test;
    bit test_pass = 1;
@@ -11,7 +11,7 @@ class wb_env_base_test extends uvm_test;
 
    `uvm_component_utils(wb_env_base_test)
 
-   wb_env env;
+   wb_env_env env;
 
    function new(string name, uvm_component parent);
       super.new(name, parent);
@@ -19,7 +19,7 @@ class wb_env_base_test extends uvm_test;
 
    virtual function void build_phase(uvm_phase phase);
       super.build_phase(phase);
-      env = wb_env::type_id::create("env", this);
+      env = wb_env_env::type_id::create("env", this);
       wb_master_config = new("wb_master_config");
       wb_slave_config = new("wb_slave_config");
 

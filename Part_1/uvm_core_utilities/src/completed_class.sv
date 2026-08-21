@@ -1,4 +1,5 @@
-
+`include "uvm_macros.svh"
+import uvm_pkg::*;
 module top;
    import uvm_pkg::*;
 
@@ -59,8 +60,10 @@ class  class_B extends uvm_object;
    function new(string name="");
       super.new(name);
 
-      cl1 = new(name,10);
-      cl3 = new(name,11 )	;
+     // cl1 = new(name,10);
+     // cl3 = new(name,11 )	;
+      cl1 = new(name);
+      cl3 = new(name);
       par_string  = name;
       bits_field = inst_id;
    endfunction

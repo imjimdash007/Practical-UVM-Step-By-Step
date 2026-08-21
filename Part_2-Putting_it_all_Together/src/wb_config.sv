@@ -27,7 +27,7 @@ class wb_config extends uvm_object;
    }
 
    constraint reasonable_max_n_wss {
-      max_n_wss == 10;
+      soft max_n_wss == 10;
    }
 
    constraint supported {

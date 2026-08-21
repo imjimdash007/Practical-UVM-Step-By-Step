@@ -19,7 +19,7 @@ class base_sequence extends uvm_sequence #(wb_transaction);
 
    function new(string name = "base_seq");
       super.new(name);
-     set_automatic_phase_objection(1);
+     //set_automatic_phase_objection(1);
    endfunction:new
 /*
    virtual task pre_body(); 
@@ -54,7 +54,7 @@ class sequence_0 extends base_sequence;
    virtual task pre_body(); 
 	// Provided as an example. See above comment DONT USE THIS.
 
-      uvm_phase phase_=get_starting_phase();
+      uvm_phase phase_=starting_phase;
 
       if (phase_!=null) begin
 	 `uvm_info(get_type_name(),
@@ -68,7 +68,7 @@ class sequence_0 extends base_sequence;
    // Drop the objection in the post_body so the objection is removed when
    // the root sequence is complete.   Provided as an example. See above comment. DONT USE THIS.
    virtual task post_body(); 
-      uvm_phase phase_=get_starting_phase();
+      uvm_phase phase_=starting_phase;
 
       if (phase_!=null) begin
 	 `uvm_info(get_type_name(),

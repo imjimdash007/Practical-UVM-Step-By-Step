@@ -1,0 +1,53 @@
+# ============================================================================
+# Questasim Makefile for Part 2: Putting it all Together
+# ============================================================================
+
+# --- Configuration ---
+# Questasim needs to know all top-level modules to simulate
+#TOP_MODULE = work.wb_env_top work.wb_env_tb_mod
+#TOP_MODULE = work.wb_env_top_mod work.wb_env_tb_mod
+TOP_MODULE = work.wb_env_top_mod
+TEST       = wb_env_test
+SEED       = 1
+
+# --- Paths ---
+INC_DIRS   = +incdir+../include +incdir+../src +incdir+../env +incdir+../tests +incdir+../hdl
+SRC_FILES  = ../hdl/dut2.sv ../tests/wb_env_tb_mod.sv ../hdl/wb_env_top.sv
+
+# --- Questasim Commands ---
+VLIB       = vlib
+VMAP       = vmap
+VLOG       = vlog
+VSIM       = vsim
+
+# --- Compilation Options ---
+# -L mtiUvm     : Use pre-compiled UVM 1.2
+# -mfcu         : Multi-file compilation unit
+# -suppress 7030: Suppress wildcard array warnings (like we did in Part 1)
+VLOG_OPTS  = -sv -mfcu -suppress 7030 -L mtiUvm $(INC_DIRS) \
+             +define+UVM_NO_DEPRECATED \
+             +define+UVM_OBJECT_MUST_HAVE_CONSTRUCTOR
+
+# --- Simulation Options ---
+VSIM_OPTS  = -c -suppress 7030 -L mtiUvm -sv_seed $(SEED) +UVM_TESTNAME=$(TEST)
+DO_CMDS    = "run -all; quit -f"
+
+# ============================================================================
+# Targets
+# ============================================================================
+.PHONY: all clean comp run
+
+all: clean comp run
+
+work:
+	$(VLIB) work
+	$(VMAP) work work
+
+comp: work
+	$(VLOG) $(VLOG_OPTS) $(SRC_FILES)
+
+run:
+	$(VSIM) $(VSIM_OPTS) $(TOP_MODULE) -do $(DO_CMDS)
+
+clean:
+	rm -rf work transcript vsim.wlf *.log modelsim.ini

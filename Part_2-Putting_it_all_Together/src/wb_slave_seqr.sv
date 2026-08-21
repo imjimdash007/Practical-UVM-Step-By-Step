@@ -11,7 +11,7 @@ class wb_slave_seqr extends uvm_sequencer # (wb_transaction);
                  uvm_component parent);
       super.new(name,parent);
       m_getp = new("slave_get_port",this);
-      set_arbitration(UVM_SEQ_ARB_STRICT_FIFO);
+      set_arbitration(SEQ_ARB_STRICT_FIFO);
 
    endfunction:new 
 

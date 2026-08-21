@@ -1,5 +1,5 @@
 `ifndef WB_SLAVE__SV
- `define WB_SLAVE__SV
+`define WB_SLAVE__SV
 
 typedef class wb_transaction;
    typedef class wb_slave;
@@ -49,18 +49,15 @@ class wb_slave extends uvm_driver # (wb_transaction);
 
    task get(output wb_transaction transaction);
       wait(m_tr != null )
-  	transaction = m_tr;
+      transaction = m_tr;
       m_tr = null;
    endtask: get
 
 endclass: wb_slave
 
 
-
-
-
    function wb_slave::new(string name = "wb_slave",
-			  uvm_component parent = null);
+              uvm_component parent = null);
       super.new(name, parent);
       getp= new("slv_get_export",this);
       
@@ -69,18 +66,24 @@ endclass: wb_slave
 
    function void wb_slave::build_phase(uvm_phase phase);
       super.build_phase(phase);
+      
+      // FIX 1: Fetch config from DB, or create a default if it's missing to prevent SIGSEGV
+      if(!uvm_config_db#(wb_config)::get(this.get_parent(), "", "config", wb_slave_cfg)) begin
+         `uvm_info("WB_SLAVE", "Config not found in DB, creating default", UVM_LOW)
+         wb_slave_cfg = new("wb_slave_cfg");
+      end
    endfunction: build_phase
 
    function void wb_slave::connect_phase(uvm_phase phase);
       super.connect_phase(phase);
       if(!uvm_config_db#(v_if)::get(this, "", "slv_if", drv_if))
-	`uvm_fatal("NOVIF SLV DRIVER",{"virtual interface must be set for: ","WB_SLAVE",".v_if"}); 
+    `uvm_fatal("NOVIF SLV DRIVER",{"virtual interface must be set for: ","WB_SLAVE",".v_if"}); 
    endfunction: connect_phase
 
    function void wb_slave::end_of_elaboration_phase(uvm_phase phase);
       super.end_of_elaboration_phase(phase);
       if (drv_if == null)
-	`uvm_fatal("NO_CONN", "Virtual port not connected to the actual interface instance");   
+    `uvm_fatal("NO_CONN", "Virtual port not connected to the actual interface instance");   
    endfunction: end_of_elaboration_phase
 
 
@@ -105,10 +108,10 @@ endclass: wb_slave
 
 
    task wb_slave::run_phase(uvm_phase phase);
-      super.configure_phase(phase);
+      super.run_phase(phase);  // FIX 2: Changed from configure_phase to run_phase
       //phase.raise_objection(this,"");
       fork 
-	 slave_driver();
+     slave_driver();
       join_none
       //phase.drop_objection(this);
    endtask: run_phase
@@ -118,11 +121,16 @@ endclass: wb_slave
 
    task wb_slave::slave_driver();
       bit [63:0] read_data;
-      wb_slave_cfg.print();
+      
+      // FIX 3: Null pointer check to protect the print statement
+      if(wb_slave_cfg != null) begin
+          wb_slave_cfg.print();
+      end
+      
       forever begin
-	 wb_transaction tr;
+     wb_transaction tr;
 
-	 do begin
+     do begin
             if (this.drv_if.CYC_I !== 1'b1 || this.drv_if.STB_I !== 1'b1) begin
                this.drv_if.DAT_O    <= 64'bz;
                this.drv_if.TGD_O    <= 16'bz;
@@ -138,51 +146,49 @@ endclass: wb_slave
               this.drv_if.WE_I  or
               this.drv_if.TGA_I or
               this.drv_if.TGC_I);
-	 end while (this.drv_if.CYC_I !== 1'b1 ||
+     end while (this.drv_if.CYC_I !== 1'b1 ||
                     this.drv_if.STB_I !== 1'b1);
-	 tr= wb_transaction::type_id::create("tr", this);
-	 tr.address = this.drv_if.ADR_I;
-	 // Are we supposed to respond to this cycle?
-	 if(this.wb_slave_cfg.min_addr <= tr.address  && tr.address <=this.wb_slave_cfg.max_addr )
-	   begin
-	      tr.sel = this.drv_if.SEL_I;
-	      tr.tgc  = this.drv_if.TGC_I;
-	      `uvm_do_callbacks(wb_slave,wb_slave_callbacks, pre_tx(this, tr))
-	      tr.tga = this.drv_if.TGA_I;
-	      if(this.drv_if.WE_I) begin
-		 tr.kind = wb_transaction::WRITE;
-	   	 `uvm_info("Wb_slave","got a write transaction  from Master ",UVM_LOW)
-		 tr.data  = this.drv_if.DAT_I;
-	         tr.tgd  = this.drv_if.TGD_I;
-	      end
-	      else  begin
-		 tr.kind = wb_transaction::READ ;
-   		 `uvm_info("Wb_slave","got a read transaction  ",UVM_LOW)
-	      end
-	      m_tr = tr;
-	      seq_item_port.get_next_item(tr);
+     tr= wb_transaction::type_id::create("tr", this);
+     tr.address = this.drv_if.ADR_I;
+     // Are we supposed to respond to this cycle?
+     if(this.wb_slave_cfg.min_addr <= tr.address  && tr.address <=this.wb_slave_cfg.max_addr )
+       begin
+          tr.sel = this.drv_if.SEL_I;
+          tr.tgc  = this.drv_if.TGC_I;
+          `uvm_do_callbacks(wb_slave,wb_slave_callbacks, pre_tx(this, tr))
+          tr.tga = this.drv_if.TGA_I;
+          if(this.drv_if.WE_I) begin
+         tr.kind = wb_transaction::WRITE;
+             `uvm_info("Wb_slave","got a write transaction  from Master ",UVM_LOW)
+         tr.data  = this.drv_if.DAT_I;
+             tr.tgd  = this.drv_if.TGD_I;
+          end
+          else  begin
+         tr.kind = wb_transaction::READ ;
+             `uvm_info("Wb_slave","got a read transaction  ",UVM_LOW)
+          end
+          m_tr = tr;
+          seq_item_port.get_next_item(tr);
               this.drv_if.DAT_O    = 64'bz;
- 	      if(tr.kind == wb_transaction::READ) begin
-		 this.drv_if.DAT_O = tr.data;
-	      end
+          if(tr.kind == wb_transaction::READ) begin
+         this.drv_if.DAT_O = tr.data;
+          end
 
-	      repeat (this.wb_slave_cfg.max_n_wss) begin
-		 @ (this.drv_if.slave_cb);
+          repeat (this.wb_slave_cfg.max_n_wss) begin
+         @ (this.drv_if.slave_cb);
               end
-	      this.drv_if.ACK_O <= 1'b1;
-  	      this.drv_if.RTY_O <= 1'b0;
-	      this.drv_if.ERR_O <= 1'b0;
-	      @ (this.drv_if.slave_cb);
-	      this.drv_if.ACK_O <= 1'b0;
-	      @(this.drv_if.slave_cb);
+          this.drv_if.ACK_O <= 1'b1;
+              this.drv_if.RTY_O <= 1'b0;
+          this.drv_if.ERR_O <= 1'b0;
+          @ (this.drv_if.slave_cb);
+          this.drv_if.ACK_O <= 1'b0;
+          @(this.drv_if.slave_cb);
               this.drv_if.DAT_O    <= 64'bz;
-	      `uvm_do_callbacks(wb_slave,wb_slave_callbacks, post_tx(this, tr))
-      	      `uvm_info("SLAVE_DRIVER", "Completed transaction...",UVM_LOW)
-	      seq_item_port.item_done(tr);
-	   end // if 
+          `uvm_do_callbacks(wb_slave,wb_slave_callbacks, post_tx(this, tr))
+              `uvm_info("SLAVE_DRIVER", "Completed transaction...",UVM_LOW)
+          seq_item_port.item_done(tr);
+       end // if 
       end //forever
    endtask : slave_driver
 
 `endif // WB_SLAVE__SV
-
-
