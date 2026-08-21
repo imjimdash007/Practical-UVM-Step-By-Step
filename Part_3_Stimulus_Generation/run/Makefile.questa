@@ -1,0 +1,27 @@
+TOP_MODULE = work.wb_env_top_mod
+# Default test, can be overridden via command line
+TEST       ?= wb_env_test_grab
+SEED       = 1
+
+INC_DIRS   = +incdir+../include +incdir+../src +incdir+../env +incdir+../tests +incdir+../hdl
+SRC_FILES  = ../hdl/dut2.sv ../tests/wb_env_tb_mod.sv ../hdl/wb_env_top.sv
+
+VLOG_OPTS  = -sv -mfcu -suppress 7030 -L mtiUvm $(INC_DIRS) +define+UVM_NO_DEPRECATED +define+UVM_OBJECT_MUST_HAVE_CONSTRUCTOR
+VSIM_OPTS  = -c -suppress 7030 -L mtiUvm -sv_seed $(SEED) +UVM_TESTNAME=$(TEST)
+
+.PHONY: all clean comp run
+
+all: clean comp run
+
+work:
+	vlib work
+	vmap work work
+
+comp: work
+	vlog $(VLOG_OPTS) $(SRC_FILES)
+
+run:
+	vsim $(VSIM_OPTS) $(TOP_MODULE) -do "run -all; quit -f"
+
+clean:
+	rm -rf work transcript vsim.wlf *.log modelsim.ini

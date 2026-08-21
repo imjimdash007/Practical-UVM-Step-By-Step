@@ -1,0 +1,1 @@
+make -f Makefile.questa run TEST=wb_env_test_priority
